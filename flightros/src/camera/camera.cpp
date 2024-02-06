@@ -39,15 +39,15 @@ int main(int argc, char *argv[]) {
 
   // Flightmare(Unity3D)
   std::shared_ptr<UnityBridge> unity_bridge_ptr = UnityBridge::getInstance();
-  SceneID scene_id{UnityScene::WAREHOUSE};
+  SceneID scene_id{UnityScene::NATUREFOREST};
   bool unity_ready{false};
 
   // initialize publishers
   image_transport::ImageTransport it(pnh);
   rgb_pub = it.advertise("/rgb", 1);
   depth_pub = it.advertise("/depth", 1);
-  segmentation_pub = it.advertise("/segmentation", 1);
-  opticalflow_pub = it.advertise("/opticalflow", 1);
+  // segmentation_pub = it.advertise("/segmentation", 1);
+  // opticalflow_pub = it.advertise("/opticalflow", 1);
 
   // Flightmare
   Vector<3> B_r_BC(0.0, 0.0, 0.3);
@@ -63,6 +63,12 @@ int main(int argc, char *argv[]) {
 
   // initialization
   quad_state.setZero();
+  if(scene_id == UnityScene::NATUREFOREST)
+  {
+    quad_state.x[QS::POSX] = 101;
+    quad_state.x[QS::POSY] = 86;
+    quad_state.x[QS::POSZ] = 31;
+  }
   quad_ptr->reset(quad_state);
 
   // connect unity

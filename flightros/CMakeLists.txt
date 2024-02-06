@@ -38,25 +38,25 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -Wall -g")
 
 #pilot
 
-cs_add_library(flight_pilot
-    src/pilot/flight_pilot.cpp
-)
+# cs_add_library(flight_pilot
+#     src/pilot/flight_pilot.cpp
+# )
 
-target_link_libraries(flight_pilot
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}
-  stdc++fs
-)
+# target_link_libraries(flight_pilot
+#   ${catkin_LIBRARIES}
+#   ${OpenCV_LIBRARIES}
+#   stdc++fs
+# )
 
-cs_add_executable(flight_pilot_node
-   src/pilot/flight_pilot_node.cpp
-)
+# cs_add_executable(flight_pilot_node
+#    src/pilot/flight_pilot_node.cpp
+# )
 
-target_link_libraries(flight_pilot_node
-  flight_pilot
-  ${OpenCV_LIBRARIES}
-  stdc++fs
-)
+# target_link_libraries(flight_pilot_node
+#   flight_pilot
+#   ${OpenCV_LIBRARIES}
+#   stdc++fs
+# )
 
 # motion_planning
 
@@ -124,17 +124,17 @@ LIBRARIES
 CATKIN_DEPENDS
 )
 
-cs_add_executable(racing
-    src/racing/racing.cpp
-)
+# cs_add_executable(racing
+#     src/racing/racing.cpp
+# )
 
-target_link_libraries(racing
-${catkin_LIBRARIES}
-${OpenCV_LIBRARIES}
-stdc++fs
-zmq
-zmqpp
-)
+# target_link_libraries(racing
+# ${catkin_LIBRARIES}
+# ${OpenCV_LIBRARIES}
+# stdc++fs
+# zmq
+# zmqpp
+# )
 
 # camera
 
