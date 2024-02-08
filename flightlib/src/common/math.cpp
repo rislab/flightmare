@@ -145,53 +145,55 @@ void quaternionToEuler(const Quaternion& quat, Ref<Vector<3>> euler) {
 std::vector<Scalar> transformationRos2Unity(const Matrix<4, 4>& ros_tran_mat) {
   /// [ Transformation Matrix ] from ROS coordinate system (right hand)
   /// to Unity coordinate system (left hand)
+  // https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion
+  // https://github.com/RobotecAI/ros2-for-unity/blob/develop/src/Ros2ForUnity/Scripts/Transformations.cs
   Matrix<4, 4> tran_mat = Matrix<4, 4>::Zero();
-  tran_mat(0, 0) = 1.0;
-  tran_mat(1, 2) = 1.0;
+  tran_mat(0, 2) = 1.0;
+  tran_mat(1, 0) = -1.0;
   tran_mat(2, 1) = 1.0;
   tran_mat(3, 3) = 1.0;
-  //
+
   Matrix<4, 4> unity_tran_mat = tran_mat * ros_tran_mat * tran_mat.transpose();
-  // std::vector<Scalar> unity_tran_mat_vec(
-  //   unity_tran_mat.data(),
-  //   unity_tran_mat.data() + unity_tran_mat.rows() * unity_tran_mat.cols());
+
+  std::vector<Scalar> unity_tran_mat_vec(
+    unity_tran_mat.data(),
+    unity_tran_mat.data() + unity_tran_mat.rows() * unity_tran_mat.cols());
   std::vector<Scalar> tran_unity;
   for (int i = 0; i < 4; ++i) {
     for (int j = 0; j < 4; ++j) {
       tran_unity.push_back(unity_tran_mat(i, j));
     }
   }
+
   return tran_unity;
 }
 
 std::vector<Scalar> quaternionRos2Unity(const Quaternion& ros_quat) {
   /// [ Quaternion ] from ROS coordinate system (right hand)
   /// to Unity coordinate system (left hand)
-  Matrix<3, 3> rot_mat = Matrix<3, 3>::Zero();
-  rot_mat(0, 0) = 1.0;
-  rot_mat(1, 2) = 1.0;
-  rot_mat(2, 1) = 1.0;
-  //
-  Matrix<3, 3> unity_rot_mat =
-    rot_mat * ros_quat.toRotationMatrix() * rot_mat.transpose();
-  Quaternion unity_quat(unity_rot_mat);
-  std::vector<Scalar> unity_quat_vec{unity_quat.x(), unity_quat.y(),
-                                     unity_quat.z(), unity_quat.w()};
+  // https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion
+  // https://github.com/RobotecAI/ros2-for-unity/blob/develop/src/Ros2ForUnity/Scripts/Transformations.cs
+  std::vector<Scalar> unity_quat_vec{ros_quat.y(), -ros_quat.z(),
+                                     -ros_quat.x(), ros_quat.w()};
   return unity_quat_vec;
 }
 
 std::vector<Scalar> positionRos2Unity(const Vector<3>& ros_pos_vec) {
   /// [ Position Vector ] from ROS coordinate system (right hand)
   /// to Unity coordinate system (left hand)
-  std::vector<Scalar> unity_position{ros_pos_vec(0), ros_pos_vec(2),
-                                     ros_pos_vec(1)};
+  // https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion
+  // https://github.com/RobotecAI/ros2-for-unity/blob/develop/src/Ros2ForUnity/Scripts/Transformations.cs
+  std::vector<Scalar> unity_position{-ros_pos_vec(1), ros_pos_vec(2),
+                                     ros_pos_vec(0)};
   return unity_position;
 }
 
 std::vector<Scalar> scalarRos2Unity(const Vector<3>& ros_scalar) {
   /// [ Object Scalar Vector ] from ROS coordinate system (right hand)
   /// to Unity coordinate system (left hand)
-  std::vector<Scalar> unity_scalar{ros_scalar(0), ros_scalar(2), ros_scalar(1)};
+  // https://github.com/siemens/ros-sharp/wiki/Dev_ROSUnityCoordinateSystemConversion
+  // https://github.com/RobotecAI/ros2-for-unity/blob/develop/src/Ros2ForUnity/Scripts/Transformations.cs
+  std::vector<Scalar> unity_scalar{-ros_scalar(1), ros_scalar(2), ros_scalar(0)};
   return unity_scalar;
 }
 

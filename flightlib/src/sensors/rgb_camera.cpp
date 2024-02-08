@@ -181,4 +181,12 @@ bool RGBCamera::getOpticalFlow(cv::Mat& opticalflow) {
   return false;
 }
 
+void RGBCamera::getCameraIntrinsics(double& fx, double& fy, double& cx, double& cy) {
+  double tan_inv = 1.0 / tan(fov_ / 2.0);
+  cx = width_ / 2.0;
+  cy = height_ / 2.0;
+  fx = cx * tan_inv;
+  fy = cy * tan_inv;
+}
+
 }  // namespace flightlib

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Core>
+#include <Eigen/Eigen>
 
 namespace flightlib {
 
