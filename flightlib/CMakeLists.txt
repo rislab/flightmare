@@ -25,12 +25,12 @@ set(
 
 message(STATUS "======> Setup Dependencies")
 if(EIGEN_FROM_SYSTTEM)
-  find_package(Eigen3 3.3.4 QUIET)
+  find_package(Eigen3 3.4.0 REQUIRED)
   if(EIGEN3_FOUND)
     message(STATUS "Using system provided Eigen.")
     message(${EIGEN3_INCLUDE_DIR})
   else()
-    message(STATUS "No sufficient Eigen version (3.3.4) found.")
+    message(STATUS "No sufficient Eigen version (3.4.0) found.")
     message(STATUS "Restoring to download Eigen sources.")
     include(cmake/eigen.cmake)
   endif()
@@ -84,7 +84,7 @@ endif()
 message(STATUS "======> Setup Compilation")
 
 add_definitions(-DEIGEN_STACK_ALLOCATION_LIMIT=1048576)
-include_directories(${EIGEN_INCLUDE_DIR} "tests")
+include_directories(${EIGEN3_INCLUDE_DIR} "tests")
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Set default build type
