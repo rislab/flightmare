@@ -181,4 +181,16 @@ bool RGBCamera::getOpticalFlow(cv::Mat& opticalflow) {
   return false;
 }
 
+void RGBCamera::getCameraIntrinsics(double& fx, double& fy, double& cx, double& cy) {
+  // fov_ is the vertical fov in degrees
+  double fovy_radians = (M_PI/180.0) * fov_;
+  double fovx_radians = 2.0 * std::atan(std::tan(fovy_radians / 2) * width_ / height_);
+  double tan_invx = 1.0 / tan(0.5 * fovx_radians);
+  double tan_invy = 1.0 / tan(0.5 * fovy_radians);
+  cx = width_ / 2.0;
+  cy = height_ / 2.0;
+  fx = cx * tan_invx;
+  fy = cy * tan_invy;
+}
+
 }  // namespace flightlib

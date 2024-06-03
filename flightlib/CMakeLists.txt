@@ -25,12 +25,12 @@ set(
 
 message(STATUS "======> Setup Dependencies")
 if(EIGEN_FROM_SYSTTEM)
-  find_package(Eigen3 3.3.4 QUIET)
+  find_package(Eigen3 3.4.0 EXACT REQUIRED)
   if(EIGEN3_FOUND)
     message(STATUS "Using system provided Eigen.")
     message(${EIGEN3_INCLUDE_DIR})
   else()
-    message(STATUS "No sufficient Eigen version (3.3.4) found.")
+    message(STATUS "No sufficient Eigen version (3.4.0) found.")
     message(STATUS "Restoring to download Eigen sources.")
     include(cmake/eigen.cmake)
   endif()
@@ -84,7 +84,7 @@ endif()
 message(STATUS "======> Setup Compilation")
 
 add_definitions(-DEIGEN_STACK_ALLOCATION_LIMIT=1048576)
-include_directories(${EIGEN_INCLUDE_DIR} "tests")
+include_directories(${EIGEN3_INCLUDE_DIR} "tests")
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Set default build type
@@ -159,14 +159,14 @@ file(GLOB_RECURSE FLIGHTLIB_TEST_SOURCES
 )
 
 # Create file lists for flightlib_gym source 
-file(GLOB_RECURSE FLIGHTLIB_GYM_SOURCES
-  src/wrapper/*.cpp 
-)
+# file(GLOB_RECURSE FLIGHTLIB_GYM_SOURCES
+#   src/wrapper/*.cpp 
+# )
 
 # Create file lists for flightlib_gym tests
-file(GLOB_RECURSE FLIGHTLIB_GYM_TEST_SOURCES
-  tests/wrapper/*.cpp
-)
+# file(GLOB_RECURSE FLIGHTLIB_GYM_TEST_SOURCES
+#   tests/wrapper/*.cpp
+# )
 
 # Create file lists for flightlib_unity_bridge tests
 file(GLOB_RECURSE FLIGHTLIB_UNITY_BRIDGE_TEST_SOURCES
@@ -211,25 +211,25 @@ else()
   set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 endif()
 
-if(FLIGHTLIB_GYM_SOURCES)
-  # flightlib_gym (python3 binding with Pybind11)
-  pybind11_add_module(flightgym MODULE 
-    ${FLIGHTLIB_GYM_SOURCES})
-  if(EIGEN3_FOUND)
-    target_include_directories(flightgym PRIVATE
-      # ${PROJECT_SOURCE_DIR}/externals/pybind11-src/include
-      ${PYBIND11_INCLUDE_DIR}
-      ${PROJECT_SOURCE_DIR}/include
-      ${EIGEN3_INCLUDE_DIR})  
-  else()
-    target_include_directories(flightgym PRIVATE
-      # ${PROJECT_SOURCE_DIR}/externals/pybind11-src/include
-      ${PYBIND11_INCLUDE_DIR}
-      ${PROJECT_SOURCE_DIR}/externals/eigen/eigen3 #pybind11 use #include <Eigen/Core>, however, flightmare use #include <eigen3/Eigen/Core>
-      ${PROJECT_SOURCE_DIR}/include)  
-  endif()
-  target_link_libraries(flightgym PRIVATE ${LIBRARY_NAME} )
-endif()
+# if(FLIGHTLIB_GYM_SOURCES)
+#   # flightlib_gym (python3 binding with Pybind11)
+#   pybind11_add_module(flightgym MODULE 
+#     ${FLIGHTLIB_GYM_SOURCES})
+#   if(EIGEN3_FOUND)
+#     target_include_directories(flightgym PRIVATE
+#       # ${PROJECT_SOURCE_DIR}/externals/pybind11-src/include
+#       ${PYBIND11_INCLUDE_DIR}
+#       ${PROJECT_SOURCE_DIR}/include
+#       ${EIGEN3_INCLUDE_DIR})  
+#   else()
+#     target_include_directories(flightgym PRIVATE
+#       # ${PROJECT_SOURCE_DIR}/externals/pybind11-src/include
+#       ${PYBIND11_INCLUDE_DIR}
+#       ${PROJECT_SOURCE_DIR}/externals/eigen/eigen3 #pybind11 use #include <Eigen/Core>, however, flightmare use #include <eigen3/Eigen/Core>
+#       ${PROJECT_SOURCE_DIR}/include)  
+#   endif()
+#   target_link_libraries(flightgym PRIVATE ${LIBRARY_NAME} )
+# endif()
 
 if(ENABLE_BLAS AND BLAS_FOUND AND LAPACK_FOUND)
   message(STATUS "Linking standard BLAS ${BLAS_LIBRARIES}")
@@ -241,14 +241,14 @@ if(ENABLE_BLAS AND BLAS_FOUND AND LAPACK_FOUND)
 endif()
 
 # Build tests for flightlib gym wrapper
-if(BUILD_TESTS AND FLIGHTLIB_GYM_TEST_SOURCES)
-  add_executable(test_gym ${FLIGHTLIB_GYM_TEST_SOURCES})
-  target_link_libraries(test_gym
-    ${LIBRARY_NAME}
-    gtest
-    gtest_main)
-add_test(test_gym test_gym)
-endif()
+# if(BUILD_TESTS AND FLIGHTLIB_GYM_TEST_SOURCES)
+#   add_executable(test_gym ${FLIGHTLIB_GYM_TEST_SOURCES})
+#   target_link_libraries(test_gym
+#     ${LIBRARY_NAME}
+#     gtest
+#     gtest_main)
+# add_test(test_gym test_gym)
+# endif()
 
 # Build tests for flightlib
 if(BUILD_TESTS AND FLIGHTLIB_TEST_SOURCES)
