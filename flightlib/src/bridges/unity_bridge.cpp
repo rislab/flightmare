@@ -195,7 +195,10 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
   object_t.prefab_ID = static_object->getPrefabID();
   object_t.position = positionRos2Unity(static_object->getPosition());
   object_t.rotation = quaternionRos2Unity(static_object->getQuaternion());
-  object_t.size = scalarRos2Unity(static_object->getSize());
+  // don't use scalarRos2Unity, it negates scale of first element
+  // object_t.size = scalarRos2Unity(static_object->getSize()); 
+  const Vector<3> size = static_object->getSize();
+  object_t.size = {size(1), size(2), size(0)};
 
   static_objects_.push_back(static_object);
   settings_.objects.push_back(object_t);
