@@ -313,4 +313,28 @@ bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
   return true;
 }
 
+bool UnityBridge::getBox(BoxMessage_t& box_msg) {
+  // create new message object
+  zmqpp::message pub_msg;
+  // add topic header
+  pub_msg << "Box";
+  json json_msg = box_msg;
+  pub_msg << json_msg.dump();
+  // send message and block until its sent
+  pub_.send(pub_msg);
+
+  // block until we recieve box location
+  zmqpp::message sub_msg;
+  while (true)
+  {
+    sub_.receive(sub_msg);
+    std::string metadata_string = sub_msg.get(0);
+    json json_obj = json::parse(metadata_string);
+    if (json_obj.find("center") != json_obj.end()) {
+      box_msg = json_obj;
+      return true;
+    }
+  }
+}
+
 }  // namespace flightlib

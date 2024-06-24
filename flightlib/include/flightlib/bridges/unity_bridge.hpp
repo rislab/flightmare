@@ -48,6 +48,7 @@ class UnityBridge {
   bool handleOutput();
   bool getPointCloud(PointCloudMessage_t &pointcloud_msg,
                      Scalar time_out = 600.0);
+  bool getBox(BoxMessage_t &box_msg);
 
   // public set functions
   bool setScene(const SceneID &scene_id);

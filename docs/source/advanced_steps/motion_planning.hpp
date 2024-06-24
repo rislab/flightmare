@@ -117,7 +117,7 @@ QuadState quad_state_;
 
 // Flightmare(Unity3D)
 std::shared_ptr<UnityBridge> unity_bridge_ptr_;
-SceneID scene_id_{UnityScene::NATUREFOREST};
+SceneID scene_id_{UnityScene::WAREHOUSE};
 bool unity_ready_{false};
 bool unity_render_{true};
 RenderMessage_t unity_output_;
