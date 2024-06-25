@@ -307,8 +307,8 @@ bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
     }
     std::cout << "Waiting for Pointcloud: Current Runtime=" << (int)run_time
               << " seconds." << std::endl;
-    usleep((time_out / 10.0) * 1e6);
-    run_time += time_out / 10.0;
+    usleep(5.0 * 1e6);
+    run_time += 5.0;
   }
   return true;
 }
