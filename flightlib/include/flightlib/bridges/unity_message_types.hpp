@@ -135,6 +135,7 @@ struct PointCloudMessage_t {
   // define point cloud box range [x, y, z] / meter
   std::vector<Scalar> range{20.0, 20.0, 20.0};
   std::vector<Scalar> origin{0.0, 0.0, 0.0};
+  std::vector<Scalar> zero{0.0, 0.0, 0.0};
   Scalar resolution{0.15};
   std::string path{"point_clouds_data/"};
   std::string file_name{"default"};
@@ -239,6 +240,7 @@ inline void from_json(const json &j, SubMessage_t &o) {
 inline void to_json(json &j, const PointCloudMessage_t &o) {
   j = json{{"range", o.range},
            {"origin", o.origin},
+           {"zero", o.zero},
            {"resolution", o.resolution},
            {"path", o.path},
            {"file_name", o.file_name}};

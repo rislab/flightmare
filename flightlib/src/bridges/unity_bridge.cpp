@@ -295,9 +295,6 @@ bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
   // send message without blocking
   pub_.send(msg, true);
 
-  std::cout << "Generate PointCloud: Timeout=" << (int)time_out << " seconds."
-            << std::endl;
-
   Scalar run_time = 0.0;
   while (!std::experimental::filesystem::exists(
     pointcloud_msg.path + pointcloud_msg.file_name + ".ply")) {
