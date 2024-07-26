@@ -106,17 +106,23 @@ bool UnityBridge::handleSettings(void) {
 
 bool UnityBridge::getRender(const FrameID frame_id) {
   pub_msg_.frame_id = frame_id;
+
+  // Update quadrotors and other vehicles
   QuadState quad_state;
   for (size_t idx = 0; idx < pub_msg_.vehicles.size(); idx++) {
     unity_quadrotors_[idx]->getState(&quad_state);
     pub_msg_.vehicles[idx].position = positionRos2Unity(quad_state.p);
     pub_msg_.vehicles[idx].rotation = quaternionRos2Unity(quad_state.q());
+    pub_msg_.vehicles[idx].size =
+      scalarRos2Unity(unity_quadrotors_[idx]->getSize());
   }
 
+  // Update static objects as well
   for (size_t idx = 0; idx < pub_msg_.objects.size(); idx++) {
-    std::shared_ptr<StaticObject> gate = static_objects_[idx];
-    pub_msg_.objects[idx].position = positionRos2Unity(gate->getPosition());
-    pub_msg_.objects[idx].rotation = quaternionRos2Unity(gate->getQuaternion());
+    std::shared_ptr<StaticObject> obj = static_objects_[idx];
+    pub_msg_.objects[idx].position = positionRos2Unity(obj->getPosition());
+    pub_msg_.objects[idx].rotation = quaternionRos2Unity(obj->getQuaternion());
+    pub_msg_.objects[idx].size = scalarRos2Unity(obj->getSize());
   }
 
   // create new message object
@@ -189,7 +195,10 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
   object_t.prefab_ID = static_object->getPrefabID();
   object_t.position = positionRos2Unity(static_object->getPosition());
   object_t.rotation = quaternionRos2Unity(static_object->getQuaternion());
-  object_t.size = scalarRos2Unity(static_object->getSize());
+  // don't use scalarRos2Unity, it negates scale of first element
+  // object_t.size = scalarRos2Unity(static_object->getSize()); 
+  const Vector<3> size = static_object->getSize();
+  object_t.size = {size(1), size(2), size(0)};
 
   static_objects_.push_back(static_object);
   settings_.objects.push_back(object_t);
@@ -286,9 +295,6 @@ bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
   // send message without blocking
   pub_.send(msg, true);
 
-  std::cout << "Generate PointCloud: Timeout=" << (int)time_out << " seconds."
-            << std::endl;
-
   Scalar run_time = 0.0;
   while (!std::experimental::filesystem::exists(
     pointcloud_msg.path + pointcloud_msg.file_name + ".ply")) {
@@ -298,10 +304,34 @@ bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
     }
     std::cout << "Waiting for Pointcloud: Current Runtime=" << (int)run_time
               << " seconds." << std::endl;
-    usleep((time_out / 10.0) * 1e6);
-    run_time += time_out / 10.0;
+    usleep(5.0 * 1e6);
+    run_time += 5.0;
   }
   return true;
+}
+
+bool UnityBridge::getBox(BoxMessage_t& box_msg) {
+  // create new message object
+  zmqpp::message pub_msg;
+  // add topic header
+  pub_msg << "Box";
+  json json_msg = box_msg;
+  pub_msg << json_msg.dump();
+  // send message and block until its sent
+  pub_.send(pub_msg);
+
+  // block until we recieve box location
+  zmqpp::message sub_msg;
+  while (true)
+  {
+    sub_.receive(sub_msg);
+    std::string metadata_string = sub_msg.get(0);
+    json json_obj = json::parse(metadata_string);
+    if (json_obj.find("center") != json_obj.end()) {
+      box_msg = json_obj;
+      return true;
+    }
+  }
 }
 
 }  // namespace flightlib

@@ -23,12 +23,23 @@ namespace flightlib {
 enum UnityScene {
   INDUSTRIAL = 0,
   WAREHOUSE = 1,
-  GARAGE = 2,
-  TUNELS = 4,
-  NATUREFOREST = 3,
+  MINE = 2,
+  CAVE = 3,
+  CORRIDOR = 4,
+  NATUREFOREST = 5,
   // total number of environment
-  SceneNum = 5
+  SceneNum = 6
 };
+
+// enum UnityScene {
+//   INDUSTRIAL = 0,
+//   WAREHOUSE = 1,
+//   GARAGE = 2,
+//   TUNELS = 4,
+//   NATUREFOREST = 3,
+//   // total number of environment
+//   SceneNum = 5
+// };
 
 // Unity Camera, should not be used alone.
 // has to be attached on a vehicle.
@@ -124,9 +135,18 @@ struct PointCloudMessage_t {
   // define point cloud box range [x, y, z] / meter
   std::vector<Scalar> range{20.0, 20.0, 20.0};
   std::vector<Scalar> origin{0.0, 0.0, 0.0};
+  std::vector<Scalar> zero{0.0, 0.0, 0.0};
   Scalar resolution{0.15};
   std::string path{"point_clouds_data/"};
   std::string file_name{"default"};
+};
+
+struct BoxMessage_t {
+  // define box range [x, y, z] / meter
+  std::string ID{"Box"};
+  std::vector<Scalar> center{0.0, 0.0, 0.0};
+  std::vector<Scalar> size{0.0, 0.0, 0.0};
+  bool found{false};
 };
 
 /*********************
@@ -189,7 +209,21 @@ inline void to_json(json &j, const PubMessage_t &o) {
     {"frame_id", o.frame_id}, {"vehicles", o.vehicles}, {"objects", o.objects}};
 }
 
-// Publish messages to unity
+// BoxMessage to unity
+inline void to_json(json &j, const BoxMessage_t &o) {
+  j = json{
+    {"ID", o.ID}, {"center", o.center}, {"size", o.size}, {"found", o.found}};
+}
+
+// BoxMessage messages from unity
+inline void from_json(const json &j, BoxMessage_t &o) {
+  o.ID = j.at("ID").get<std::string>();
+  o.center = j.at("center").get<std::vector<Scalar>>();
+  o.size = j.at("size").get<std::vector<Scalar>>();
+  o.found = j.at("found").get<bool>();
+}
+
+// Publish messages from unity
 inline void from_json(const json &j, Sub_Vehicle_t &o) {
   o.collision = j.at("collision").get<bool>();
   o.lidar_ranges = j.at("lidar_ranges").get<std::vector<Scalar>>();
@@ -206,6 +240,7 @@ inline void from_json(const json &j, SubMessage_t &o) {
 inline void to_json(json &j, const PointCloudMessage_t &o) {
   j = json{{"range", o.range},
            {"origin", o.origin},
+           {"zero", o.zero},
            {"resolution", o.resolution},
            {"path", o.path},
            {"file_name", o.file_name}};
