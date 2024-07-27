@@ -45,4 +45,13 @@ std::vector<Scalar> quaternionRos2Unity(const Quaternion& ros_quat);
 
 std::vector<Scalar> scalarRos2Unity(const Vector<3>& ros_scale);
 
+std::vector<Scalar> scaleRos2Unity(const Vector<3>& ros_scale);
+
+Vector<3> positionUnity2Ros(const std::vector<Scalar>& unity_pos_vec);
+
+Quaternion quaternionUnity2Ros(const std::vector<Scalar>& unity_quat);
+
+Vector<3> scalarUnity2Ros(const std::vector<Scalar>& unity_scale);
+
+Vector<3> scaleUnity2Ros(const std::vector<Scalar>& unity_scale);
 }  // namespace flightlib

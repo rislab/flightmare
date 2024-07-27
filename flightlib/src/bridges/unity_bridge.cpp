@@ -114,7 +114,7 @@ bool UnityBridge::getRender(const FrameID frame_id) {
     pub_msg_.vehicles[idx].position = positionRos2Unity(quad_state.p);
     pub_msg_.vehicles[idx].rotation = quaternionRos2Unity(quad_state.q());
     pub_msg_.vehicles[idx].size =
-      scalarRos2Unity(unity_quadrotors_[idx]->getSize());
+      scaleRos2Unity(unity_quadrotors_[idx]->getSize());
   }
 
   // Update static objects as well
@@ -122,7 +122,7 @@ bool UnityBridge::getRender(const FrameID frame_id) {
     std::shared_ptr<StaticObject> obj = static_objects_[idx];
     pub_msg_.objects[idx].position = positionRos2Unity(obj->getPosition());
     pub_msg_.objects[idx].rotation = quaternionRos2Unity(obj->getQuaternion());
-    pub_msg_.objects[idx].size = scalarRos2Unity(obj->getSize());
+    pub_msg_.objects[idx].size = scaleRos2Unity(obj->getSize());
   }
 
   // create new message object
@@ -159,7 +159,7 @@ bool UnityBridge::addQuadrotor(std::shared_ptr<Quadrotor> quad) {
   vehicle_t.ID = "quadrotor" + std::to_string(settings_.vehicles.size());
   vehicle_t.position = positionRos2Unity(quad_state.p);
   vehicle_t.rotation = quaternionRos2Unity(quad_state.q());
-  vehicle_t.size = scalarRos2Unity(quad->getSize());
+  vehicle_t.size = scaleRos2Unity(quad->getSize());
 
   // get camera
   std::vector<std::shared_ptr<RGBCamera>> rgb_cameras = quad->getCameras();
@@ -195,10 +195,7 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
   object_t.prefab_ID = static_object->getPrefabID();
   object_t.position = positionRos2Unity(static_object->getPosition());
   object_t.rotation = quaternionRos2Unity(static_object->getQuaternion());
-  // don't use scalarRos2Unity, it negates scale of first element
-  // object_t.size = scalarRos2Unity(static_object->getSize()); 
-  const Vector<3> size = static_object->getSize();
-  object_t.size = {size(1), size(2), size(0)};
+  object_t.size = scaleRos2Unity(static_object->getSize()); 
 
   static_objects_.push_back(static_object);
   settings_.objects.push_back(object_t);
@@ -207,7 +204,7 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
   return true;
 }
 
-bool UnityBridge::handleOutput() {
+int UnityBridge::handleOutput() {
   // create new message object
   zmqpp::message msg;
   sub_.receive(msg);
@@ -221,7 +218,7 @@ bool UnityBridge::handleOutput() {
   for (size_t idx = 0; idx < settings_.vehicles.size(); idx++) {
     // update vehicle collision flag
     unity_quadrotors_[idx]->setCollision(sub_msg.sub_vehicles[idx].collision);
-
+    // vehicles.push_back(sub_msg.sub_vehicles[idx].vehicle);
     // feed image data to RGB camera
     for (const auto& cam : settings_.vehicles[idx].cameras) {
       for (size_t layer_idx = 0; layer_idx <= cam.enabled_layers.size();
@@ -280,7 +277,8 @@ bool UnityBridge::handleOutput() {
       }
     }
   }
-  return true;
+  // return true;
+  return sub_msg.frame_id;
 }
 
 bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,
