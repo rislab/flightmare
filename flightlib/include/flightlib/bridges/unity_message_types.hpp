@@ -122,6 +122,7 @@ struct PubMessage_t {
 struct Sub_Vehicle_t {
   bool collision;
   std::vector<Scalar> lidar_ranges;
+  // Vehicle_t vehicle;
 };
 
 struct SubMessage_t {
@@ -223,10 +224,50 @@ inline void from_json(const json &j, BoxMessage_t &o) {
   o.found = j.at("found").get<bool>();
 }
 
+// Vehicle_t messages from unity
+inline void from_json(const json &j, Vehicle_t &o) {
+  o.ID = j.at("ID").get<std::string>();
+  // unity coordinate system left-handed, y up
+  o.position = j.at("position").get<std::vector<Scalar>>();
+  // unity quaternion (x, y, z, w)
+  o.rotation = j.at("rotation").get<std::vector<Scalar>>();
+  o.size = j.at("size").get<std::vector<Scalar>>();
+  o.cameras = j.at("cameras").get<std::vector<Camera_t>>();
+  o.lidars = j.at("lidars").get<std::vector<Lidar_t>>();
+  o.has_collision_check = j.at("hasCollisionCheck").get<bool>();
+}
+
+// Camera_t messages from unity
+inline void from_json(const json &j, Camera_t &o) {
+  o.ID = j.at("ID").get<std::string>();
+  o.channels = j.at("channels").get<int>();
+  o.width = j.at("height").get<int>();
+  o.height = j.at("height").get<int>();
+  o.fov = j.at("fov").get<Scalar>();
+  o.near_clip_plane = j.at("nearClipPlane").get<std::vector<Scalar>>();
+  o.far_clip_plane = j.at("farClipPlane").get<std::vector<Scalar>>();
+  o.depth_scale = j.at("depthScale").get<Scalar>();
+  o.is_depth = j.at("isDepth").get<bool>();
+  o.output_index = j.at("outputIndex").get<int>();
+  o.enabled_layers = j.at("enabledLayers").get<std::vector<bool>>();
+  o.T_BC = j.at("T_BC").get<std::vector<Scalar>>();
+}
+
+// Lidar_t messages from unity
+inline void from_json(const json &j, Lidar_t &o) {
+  o.ID = j.at("ID").get<std::string>();
+  o.num_beams = j.at("num_beams").get<int>();
+  o.max_distance = j.at("max_distance").get<Scalar>();
+  o.start_scan_angle = j.at("start_angle").get<Scalar>();
+  o.end_scan_angle = j.at("end_angle").get<Scalar>();
+  o.T_BS = j.at("T_BS").get<std::vector<Scalar>>();
+}
+
 // Publish messages from unity
 inline void from_json(const json &j, Sub_Vehicle_t &o) {
   o.collision = j.at("collision").get<bool>();
   o.lidar_ranges = j.at("lidar_ranges").get<std::vector<Scalar>>();
+  // o.vehicle = j.at("vehicle").get<Vehicle_t>();
 }
 
 // json to our sub message data type
