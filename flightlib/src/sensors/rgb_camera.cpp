@@ -147,10 +147,8 @@ void RGBCamera::enableOpticalFlow(const bool on) {
 
 bool RGBCamera::getRGBImage(cv::Mat& rgb_img) {
   if (!rgb_queue_.empty()) {
-    // rgb_img = rgb_queue_.front();
-    // rgb_queue_.pop_front();
-    rgb_img = rgb_queue_.back();
-    rgb_queue_.pop_back();
+    rgb_img = rgb_queue_.front();
+    rgb_queue_.pop_front();
     return true;
   }
   return false;
@@ -158,8 +156,24 @@ bool RGBCamera::getRGBImage(cv::Mat& rgb_img) {
 
 bool RGBCamera::getDepthMap(cv::Mat& depth_map) {
   if (!depth_queue_.empty()) {
-    // depth_map = depth_queue_.front();
-    // depth_queue_.pop_front();
+    depth_map = depth_queue_.front();
+    depth_queue_.pop_front();
+    return true;
+  }
+  return false;
+}
+
+bool RGBCamera::getLatestRGBImage(cv::Mat& rgb_img) {
+  if (!rgb_queue_.empty()) {
+    rgb_img = rgb_queue_.back();
+    rgb_queue_.pop_back();
+    return true;
+  }
+  return false;
+}
+
+bool RGBCamera::getLatestDepthMap(cv::Mat& depth_map) {
+  if (!depth_queue_.empty()) {
     depth_map = depth_queue_.back();
     depth_queue_.pop_back();
     return true;

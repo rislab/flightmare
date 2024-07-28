@@ -1,5 +1,8 @@
 #include "flightlib/bridges/unity_bridge.hpp"
+#include <chrono>
+#include <iostream>
 
+using namespace std::chrono;
 namespace flightlib {
 
 // constructor
@@ -104,8 +107,9 @@ bool UnityBridge::handleSettings(void) {
   return done;
 };
 
-bool UnityBridge::getRender(const FrameID frame_id) {
+bool UnityBridge::getRender(const int frame_id, const double timestamp) {
   pub_msg_.frame_id = frame_id;
+  pub_msg_.timestamp = timestamp;
 
   // Update quadrotors and other vehicles
   QuadState quad_state;
@@ -204,10 +208,14 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
   return true;
 }
 
-int UnityBridge::handleOutput() {
+bool UnityBridge::handleOutput(int& frame_id, double& timestamp) {
   // create new message object
   zmqpp::message msg;
+  // high_resolution_clock::time_point start_time = high_resolution_clock::now(); 
   sub_.receive(msg);
+  // high_resolution_clock::time_point end_time = high_resolution_clock::now();
+  // double latency = duration_cast<microseconds>(end_time - start_time).count();
+  // std::cout << "Took " << latency << " microseconds" << std::endl;
   // unpack message metadata
   std::string json_sub_msg = msg.get(0);
   // parse metadata
@@ -277,8 +285,9 @@ int UnityBridge::handleOutput() {
       }
     }
   }
-  // return true;
-  return sub_msg.frame_id;
+  frame_id = sub_msg.frame_id;
+  timestamp = sub_msg.timestamp;
+  return true;
 }
 
 bool UnityBridge::getPointCloud(PointCloudMessage_t& pointcloud_msg,

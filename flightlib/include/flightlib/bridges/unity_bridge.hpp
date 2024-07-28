@@ -44,8 +44,13 @@ class UnityBridge {
   bool disconnectUnity(void);
 
   // public get functions
-  bool getRender(const FrameID frame_id);
-  int handleOutput();
+  bool getRender(const int frame_id, const double timestamp=0.0);
+  bool handleOutput() {
+    int frame_id;
+    double timestamp;
+    return handleOutput(frame_id, timestamp);
+  }
+  bool handleOutput(int& frame_id, double& timestamp);
   bool getPointCloud(PointCloudMessage_t &pointcloud_msg,
                      Scalar time_out = 600.0);
   bool getBox(BoxMessage_t &box_msg);

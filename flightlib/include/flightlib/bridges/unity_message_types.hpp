@@ -116,6 +116,7 @@ struct PubMessage_t {
   FrameID frame_id{0};
   std::vector<Vehicle_t> vehicles;
   std::vector<Object_t> objects;
+  double timestamp;
 };
 
 //
@@ -130,6 +131,7 @@ struct SubMessage_t {
   FrameID frame_id{0};
   //
   std::vector<Sub_Vehicle_t> sub_vehicles;
+  double timestamp;
 };
 
 struct PointCloudMessage_t {
@@ -207,7 +209,8 @@ inline void to_json(json &j, const SettingsMessage_t &o) {
 // Publish messages to unity
 inline void to_json(json &j, const PubMessage_t &o) {
   j = json{
-    {"frame_id", o.frame_id}, {"vehicles", o.vehicles}, {"objects", o.objects}};
+    {"frame_id", o.frame_id}, {"vehicles", o.vehicles}, {"objects", o.objects},
+    {"timestamp", o.timestamp}};
 }
 
 // BoxMessage to unity
@@ -276,6 +279,7 @@ inline void from_json(const json &j, Sub_Vehicle_t &o) {
 inline void from_json(const json &j, SubMessage_t &o) {
   o.frame_id = j.at("frame_id").get<uint64_t>();
   o.sub_vehicles = j.at("pub_vehicles").get<std::vector<Sub_Vehicle_t>>();
+  o.timestamp = j.at("timestamp").get<double>();
 }
 
 inline void to_json(json &j, const PointCloudMessage_t &o) {
