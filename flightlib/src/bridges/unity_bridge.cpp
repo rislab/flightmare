@@ -171,7 +171,8 @@ bool UnityBridge::addQuadrotor(std::shared_ptr<Quadrotor> quad) {
     std::shared_ptr<RGBCamera> cam = rgb_cameras[cam_idx];
     Camera_t camera_t;
     camera_t.ID = vehicle_t.ID + "_" + std::to_string(cam_idx);
-    camera_t.T_BC = transformationRos2Unity(rgb_cameras[cam_idx]->getRelPose());
+    // camera_t.T_BC = transformationRos2Unity(rgb_cameras[cam_idx]->getRelPose());
+    camera_t.T_BC = transformationRos2UnityCorrect(rgb_cameras[cam_idx]->getRelPose());
     camera_t.channels = rgb_cameras[cam_idx]->getChannels();
     camera_t.width = rgb_cameras[cam_idx]->getWidth();
     camera_t.height = rgb_cameras[cam_idx]->getHeight();

@@ -39,6 +39,8 @@ void quaternionToEuler(const Quaternion& quat, Ref<Vector<3>> euler);
 
 std::vector<Scalar> transformationRos2Unity(const Matrix<4, 4>& ros_tran_mat);
 
+std::vector<Scalar> transformationRos2UnityCorrect(const Matrix<4, 4>& T_ros);
+
 std::vector<Scalar> positionRos2Unity(const Vector<3>& ros_pos_vec);
 
 std::vector<Scalar> quaternionRos2Unity(const Quaternion& ros_quat);
