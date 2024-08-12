@@ -27,8 +27,15 @@ enum UnityScene {
   CAVE = 3,
   CORRIDOR = 4,
   NATUREFOREST = 5,
+  CAVE_PACK = 6,
+  SEWER1 = 7,
+  SEWER2 = 8,
+  SEWER3 = 9,
+  SEWER4 = 10,
+  SEWER5 = 11,
+  SEWER6 = 12,
   // total number of environment
-  SceneNum = 6
+  SceneNum = 13
 };
 
 // enum UnityScene {
