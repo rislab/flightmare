@@ -212,11 +212,11 @@ bool UnityBridge::addStaticObject(std::shared_ptr<StaticObject> static_object) {
 bool UnityBridge::handleOutput(int& frame_id, double& timestamp) {
   // create new message object
   zmqpp::message msg;
-  // high_resolution_clock::time_point start_time = high_resolution_clock::now(); 
+  high_resolution_clock::time_point start_time = high_resolution_clock::now(); 
   sub_.receive(msg);
-  // high_resolution_clock::time_point end_time = high_resolution_clock::now();
-  // double latency = duration_cast<microseconds>(end_time - start_time).count();
-  // std::cout << "Took " << latency << " microseconds" << std::endl;
+  high_resolution_clock::time_point end_time = high_resolution_clock::now();
+  double latency = duration_cast<microseconds>(end_time - start_time).count();
+  std::cout << "Took " << latency << " microseconds" << std::endl;
   // unpack message metadata
   std::string json_sub_msg = msg.get(0);
   // parse metadata
