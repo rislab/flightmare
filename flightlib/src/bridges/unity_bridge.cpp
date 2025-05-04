@@ -27,7 +27,7 @@ bool UnityBridge::initializeConnections() {
   pub_.bind(client_address_ + ":" + pub_port_);
 
   // create and bind a download_socket
-  sub_.set(zmqpp::socket_option::receive_high_water_mark, 6);
+  sub_.set(zmqpp::socket_option::receive_high_water_mark, 100);
   sub_.bind(client_address_ + ":" + sub_port_);
 
   // subscribe all messages from ZMQ
