@@ -36,7 +36,7 @@ enum UnityScene {
   SEWER6 = 12,
   DRONEDOME = 13,
   // total number of environment
-  SceneNum = 14
+  SceneNum = 20
 };
 
 // enum UnityScene {
