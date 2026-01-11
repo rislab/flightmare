@@ -36,6 +36,10 @@ add_compile_options(-O3)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_ARCH_FLAGS} -Wall -DNDEBUG -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -Wall -g")
 
+find_package(libzmq REQUIRED)
+find_package(zmqpp REQUIRED)
+include_directories(${libzmq_INCLUDE_DIRS} ${zmqpp_INCLUDE_DIRS})
+
 #pilot
 
 # cs_add_library(flight_pilot
@@ -88,7 +92,7 @@ if(BUILD_MP)
     find_package(ompl REQUIRED)
     if (OMPL_FOUND)
         message("Found OMPL ${OMPL_VERSION}")
-        include_directories(${OMPL_INCLUDE_DIRS})
+	include_directories(${OMPL_INCLUDE_DIRS})
 
      else ()
         message("OMPL not found")
@@ -98,7 +102,7 @@ if(BUILD_MP)
         cs_add_executable(motion_planning
             src/motion_planning/motion_planning.cpp
         )
-        target_include_directories(motion_planning PUBLIC ${Open3D_INCLUDE_DIRS})
+        target_include_directories(motion_planning PUBLIC ${Open3D_INCLUDE_DIRS} ${libzmq_INCLUDE_DIRS} ${zmqpp_INCLUDE_DIRS})
 
         target_link_libraries(motion_planning
         ${catkin_LIBRARIES}
@@ -107,8 +111,8 @@ if(BUILD_MP)
         ompl
         ${Open3D_LIBRARIES}
         OpenMP::OpenMP_CXX
-        zmq
-        zmqpp
+	${libzmq_LIBRARIES}
+	${zmqpp_LIBRARIES}
         )
     else ()
         message("Failed to build motion planning")
@@ -120,8 +124,8 @@ endif()
 
 
 catkin_package(
-LIBRARIES
-CATKIN_DEPENDS
+LIBRARIES 
+CATKIN_DEPENDS 
 )
 
 # cs_add_executable(racing
@@ -137,17 +141,20 @@ CATKIN_DEPENDS
 # )
 
 # camera
+find_package(libzmq REQUIRED)
+find_package(zmqpp REQUIRED)
+include_directories(${libzmq_INCLUDE_DIRS} ${zmqpp_INCLUDE_DIRS})
 
 cs_add_executable(camera
     src/camera/camera.cpp
 )
 
 target_link_libraries(camera
-${catkin_LIBRARIES}
-${OpenCV_LIBRARIES}
-stdc++fs
-zmq
-zmqpp
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+  ${libzmq_LIBRARIES}
+  ${zmqpp_LIBRARIES}
+  stdc++fs
 )
 
 # objects
@@ -160,8 +167,8 @@ target_link_libraries(objects
 ${catkin_LIBRARIES}
 ${OpenCV_LIBRARIES}
 stdc++fs
-zmq
-zmqpp
+${libzmq_LIBRARIES}
+${zmqpp_LIBRARIES}
 )
 
 # Finish

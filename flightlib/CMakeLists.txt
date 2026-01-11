@@ -48,8 +48,10 @@ include(cmake/yaml.cmake)
 
 # Including dependencies 
 find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(OpenMP REQUIRED)
+find_package(libzmq REQUIRED)
+find_package(zmqpp REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS} ${zmqpp_INCLUDE_DIRS} ${libzmq_INCLUDE_DIRS})
 
 if(ENABLE_BLAS)
   set(BLA_VENDOR "Generic")
@@ -204,8 +206,8 @@ else()
   target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OpenCV_LIBRARIES}
     yaml-cpp
-    zmq
-    zmqpp
+    ${libzmq_LIBRARIES}
+    ${zmqpp_LIBRARIES}
     stdc++fs)
   set(LIBRARY_NAME ${PROJECT_NAME})
   set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
@@ -237,6 +239,8 @@ if(ENABLE_BLAS AND BLAS_FOUND AND LAPACK_FOUND)
     ${BLAS_LIBRARIES}
     ${LAPACK_LIBRARIES}
     ${LAPACKE_LIBRARIES}
+    ${libzmq_LIBRARIES}
+    ${zmqpp_LIBRARIES}
   )
 endif()
 
@@ -255,6 +259,8 @@ if(BUILD_TESTS AND FLIGHTLIB_TEST_SOURCES)
   add_executable(test_lib ${FLIGHTLIB_TEST_SOURCES})
   target_link_libraries(test_lib PUBLIC
     ${LIBRARY_NAME}
+    ${libzmq_LIBRARIES}
+    ${zmqpp_LIBRARIES}
     gtest
     gtest_main)
 add_test(test_lib test_lib)
@@ -265,6 +271,8 @@ if(BUILD_UNITY_BRIDGE_TESTS AND FLIGHTLIB_UNITY_BRIDGE_TEST_SOURCES)
   add_executable(test_unity_bridge ${FLIGHTLIB_UNITY_BRIDGE_TEST_SOURCES})
   target_link_libraries(test_unity_bridge PUBLIC
     ${LIBRARY_NAME}
+    ${libzmq_LIBRARIES}
+    ${zmqpp_LIBRARIES}
     gtest
     gtest_main)
 add_test(test_unity_bridge test_unity_bridge)

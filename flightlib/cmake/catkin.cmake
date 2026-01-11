@@ -5,6 +5,9 @@ catkin_simple()
 
 add_definitions(-std=c++17)
 
+find_package(libzmq REQUIRED)
+find_package(zmqpp REQUIRED)
+
 # Library and Executables
 cs_add_library(${PROJECT_NAME} ${FLIGHTLIB_SOURCES})
 target_link_libraries(${PROJECT_NAME}
@@ -14,8 +17,8 @@ target_link_libraries(${PROJECT_NAME}
   ${LAPACKE_LIBRARIES}
   ${OpenCV_LIBRARIES}
   yaml-cpp
-  zmq
-  zmqpp
+  ${libzmq_LIBRARIES}
+  ${zmqpp_LIBRARIES}
 )
 
 # Build tests
