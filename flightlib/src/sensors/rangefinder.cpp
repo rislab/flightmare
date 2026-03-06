@@ -38,7 +38,6 @@ void Rangefinder::setStartAngle(const int start_ang) { start_angle_ = start_ang;
 void Rangefinder::setEndAngle(const int end_ang) { end_angle_ = end_ang; }
 
 Matrix<4, 4> Rangefinder::getRelPose(void) const { 
-  std::cout << "lidar get rel pose worked ----- " << std::endl;
   return T_BL_; }
 
 bool Rangefinder::getDepthMap(cv::Mat& depth_map) {
