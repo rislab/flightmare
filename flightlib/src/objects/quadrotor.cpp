@@ -240,6 +240,8 @@ bool Quadrotor::addRGBCamera(std::shared_ptr<RGBCamera> camera) {
   return true;
 }
 
+void Quadrotor::addLidar(std::shared_ptr<Rangefinder> lidar) { lidar_ = lidar;}
+
 Vector<3> Quadrotor::getSize(void) const { return size_; }
 
 Vector<3> Quadrotor::getPosition(void) const { return state_.p; }
@@ -259,6 +261,8 @@ bool Quadrotor::getCamera(const size_t cam_id,
   camera = rgb_cameras_[cam_id];
   return true;
 }
+
+std::shared_ptr<Rangefinder> Quadrotor::getLidar(void) const { return lidar_; }
 
 bool Quadrotor::getCollision() const { return collision_; }
 

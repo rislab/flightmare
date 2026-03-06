@@ -28,6 +28,8 @@
 #include "flightlib/objects/static_object.hpp"
 #include "flightlib/objects/unity_camera.hpp"
 #include "flightlib/sensors/rgb_camera.hpp"
+#include "flightlib/sensors/rangefinder.hpp"
+
 
 using json = nlohmann::json;
 
@@ -73,6 +75,7 @@ class UnityBridge {
     return bridge_ptr;
   };
 
+ std::vector<std::shared_ptr<Quadrotor>> unity_quadrotors_;
  private:
   bool initializeConnections(void);
 
@@ -81,7 +84,7 @@ class UnityBridge {
   PubMessage_t pub_msg_;
   Logger logger_{"UnityBridge"};
 
-  std::vector<std::shared_ptr<Quadrotor>> unity_quadrotors_;
+  
   std::vector<std::shared_ptr<RGBCamera>> rgb_cameras_;
   std::vector<std::shared_ptr<StaticObject>> static_objects_;
 

@@ -10,6 +10,8 @@
 #include "flightlib/objects/object_base.hpp"
 #include "flightlib/sensors/imu.hpp"
 #include "flightlib/sensors/rgb_camera.hpp"
+#include "flightlib/sensors/rangefinder.hpp"
+
 
 namespace flightlib {
 
@@ -41,6 +43,7 @@ class Quadrotor : ObjectBase {
   Quaternion getQuaternion(void) const;
   std::vector<std::shared_ptr<RGBCamera>> getCameras(void) const;
   bool getCamera(const size_t cam_id, std::shared_ptr<RGBCamera> camera) const;
+  std::shared_ptr<Rangefinder> getLidar(void) const;
   bool getCollision() const;
 
   // public set functions
@@ -48,6 +51,7 @@ class Quadrotor : ObjectBase {
   bool setCommand(const Command& cmd);
   bool updateDynamics(const QuadrotorDynamics& dynamics);
   bool addRGBCamera(std::shared_ptr<RGBCamera> camera);
+  void addLidar(std::shared_ptr<Rangefinder> lidar);
 
   // low-level controller
   Vector<4> runFlightCtl(const Scalar sim_dt, const Vector<3>& omega,
@@ -65,12 +69,15 @@ class Quadrotor : ObjectBase {
   inline void setSize(const Ref<Vector<3>> size) { size_ = size; };
   inline void setCollision(const bool collision) { collision_ = collision; };
 
+  std::vector<float> lidar_ranges_;
+
  private:
   // quadrotor dynamics, integrators
   QuadrotorDynamics dynamics_;
   IMU imu_;
   std::unique_ptr<IntegratorRK4> integrator_ptr_;
   std::vector<std::shared_ptr<RGBCamera>> rgb_cameras_;
+  std::shared_ptr<Rangefinder> lidar_;
 
   // quad control command
   Command cmd_;

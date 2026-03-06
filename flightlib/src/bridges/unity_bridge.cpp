@@ -186,6 +186,22 @@ bool UnityBridge::addQuadrotor(std::shared_ptr<Quadrotor> quad) {
     // add rgb_cameras
     rgb_cameras_.push_back(rgb_cameras[cam_idx]);
   }
+  // get and add lidar
+  std::shared_ptr<Rangefinder> lidar = quad->getLidar();
+  if (lidar) {
+    Lidar_t lidar_t;
+    lidar_t.ID = vehicle_t.ID + "_" + std::to_string(0);
+    Matrix<4, 4> rel_pose = lidar->getRelPose();
+
+    lidar_t.T_BS = transformationRos2UnityCorrect(lidar->getRelPose()); // transformation ros2 killing node
+
+    lidar_t.num_beams = lidar->getNumBeams();
+    lidar_t.max_distance = lidar->getMaxDistance();
+    lidar_t.start_scan_angle = lidar->getStartAngle();
+    lidar_t.end_scan_angle = lidar->getEndAngle();
+    
+    vehicle_t.lidars.push_back(lidar_t);
+  }
   unity_quadrotors_.push_back(quad);
 
   //
@@ -285,6 +301,8 @@ bool UnityBridge::handleOutput(int& frame_id, double& timestamp) {
         }
       }
     }
+    const std::vector<float>& ranges = sub_msg.sub_vehicles[idx].lidar_ranges;
+    unity_quadrotors_[idx]->lidar_ranges_ = ranges;
   }
   frame_id = sub_msg.frame_id;
   timestamp = sub_msg.timestamp;
