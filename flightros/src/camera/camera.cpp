@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
   // Flightmare(Unity3D)
   std::shared_ptr<UnityBridge> unity_bridge_ptr = UnityBridge::getInstance();
-  SceneID scene_id{UnityScene::NATUREFOREST};
+  SceneID scene_id{UnityScene::WAREHOUSE};
   bool unity_ready{false};
 
   // initialize publishers
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
   // initialization
   quad_state.setZero();
-  if(scene_id == UnityScene::NATUREFOREST)
+  if(scene_id == UnityScene::WAREHOUSE)
   {
     quad_state.x[QS::POSX] = 101;
     quad_state.x[QS::POSY] = 86;
