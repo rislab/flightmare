@@ -252,14 +252,8 @@ std::vector<std::shared_ptr<RGBCamera>> Quadrotor::getCameras(void) const {
   return rgb_cameras_;
 };
 
-bool Quadrotor::getCamera(const size_t cam_id,
-                          std::shared_ptr<RGBCamera> camera) const {
-  if (cam_id <= rgb_cameras_.size()) {
-    return false;
-  }
-
-  camera = rgb_cameras_[cam_id];
-  return true;
+std::shared_ptr<RGBCamera> Quadrotor::getCamera(const size_t cam_id) const {
+  return rgb_cameras_[cam_id];
 }
 
 std::shared_ptr<Rangefinder> Quadrotor::getLidar(void) const { return lidar_; }
