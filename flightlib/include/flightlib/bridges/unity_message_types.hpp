@@ -32,8 +32,10 @@ enum UnityScene {
   TUNNEL = 8,
   FOREST = 9,
   EMPTY = 10,
+  WALKWAY = 11,
+  ANCHOR = 12,
   // total number of environment
-  SceneNum = 11
+  SceneNum = 13
 };
 
 // enum UnityScene {
